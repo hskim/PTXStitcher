@@ -87,3 +87,6 @@ subprocess.call(linker_stage.split())
 ptx_file_name = "%s.nvptx.s" % base_file_name
 backend_stage = "clang -target nvptx64-nvidia-nvcl {0} -S -o {1}".format(linked_file_name, ptx_file_name)
 subprocess.call(backend_stage.split())
+
+ptx_run_stage = "ptxjit {0}".format(ptx_file_name)
+subprocess.call(ptx_run_stage.split())
