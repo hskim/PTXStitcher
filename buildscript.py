@@ -54,7 +54,6 @@ def base_file_name(file_name):
     name_without_extension = os.path.splitext(base_name)[0]
     return name_without_extension
 
-base_file_name = "test"
 
 parser = OptionParser()
 parser.add_option("--opt-flags", type="string", dest="opt_code_flags")
@@ -64,6 +63,8 @@ parser.add_option("-m", type="int", dest="arch_size", default=64)
 
 truncated_arg_list =  sys.argv[1:] # We don't want "python" and "buildscript.py" in our list
 (options, args) = parser.parse_args(truncated_arg_list)
+
+base_file_name = base_file_name(truncated_arg_list[-1])
 
 # use base_file_name if output file name is not specified
 output_file_name = options.output_file_name
