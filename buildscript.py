@@ -58,8 +58,13 @@ base_file_name = "test"
 
 parser = OptionParser()
 parser.add_option("--opt-flags", type="string", dest="opt_code_flags")
+parser.add_option("-o", type="string", dest="output_file_name")
 truncated_arg_list =  sys.argv[1:] # We don't want "python" and "buildscript.py" in our list
 (options, args) = parser.parse_args(truncated_arg_list)
+
+# use base_file_name if output file name is not specified
+output_file_name = options.output_file_name
+output_file_name = base_file_name if output_file_name is None else os.path.splitext(output_file_name)[0]
 
 
 cl_file_name = "%s.cl" % base_file_name
@@ -84,7 +89,7 @@ linked_file_name = "%s.linked.bc" % base_file_name
 linker_stage = "llvm-link libclc/install/lib/clc/nvptx64--.bc {0} -o {1}".format(ir_file_name, linked_file_name)
 subprocess.call(linker_stage.split())
 
-ptx_file_name = "%s.nvptx.s" % base_file_name
+ptx_file_name = "%s.nvptx.s" % output_file_name
 backend_stage = "clang -target nvptx64-- {0} -S -o {1}".format(linked_file_name, ptx_file_name)
 subprocess.call(backend_stage.split())
 
