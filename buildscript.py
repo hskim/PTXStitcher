@@ -91,7 +91,7 @@ target = TARGET_FLAGS[target][arch_size]
 
 cl_file_name = "%s.cl" % base_file_name
 ir_file_name = "%s.ll" % base_file_name
-front_end_stage = "clang -Dcl_clang_storage_class_specifiers -I/home/chae14/llvm-ptx-samples/libclc/include/generic -I/home/chae14/llvm-ptx-samples/libclc/include/ptx -include clc/clc.h -target nvptx64-- {0} -emit-llvm -S -o {1}".format(cl_file_name, ir_file_name)
+front_end_stage = "clang -Dcl_clang_storage_class_specifiers -I/home/chae14/llvm-ptx-samples/libclc/include/generic -I/home/chae14/llvm-ptx-samples/libclc/include/ptx -include clc/clc.h -target {0} {1} -emit-llvm -S -o {2}".format(target, cl_file_name, ir_file_name)
 subprocess.call(front_end_stage.split())
 
 if options.opt_code_flags:
@@ -108,11 +108,11 @@ if options.opt_code_flags:
     ir_file_name = optimized_ir_file_name
 
 linked_file_name = "%s.linked.bc" % base_file_name
-linker_stage = "llvm-link libclc/install/lib/clc/nvptx64--.bc {0} -o {1}".format(ir_file_name, linked_file_name)
+linker_stage = "llvm-link libclc/install/lib/clc/{0}.bc {1} -o {2}".format(target, ir_file_name, linked_file_name)
 subprocess.call(linker_stage.split())
 
 ptx_file_name = "%s.nvptx.s" % output_file_name
-backend_stage = "clang -target nvptx64-- {0} -S -o {1}".format(linked_file_name, ptx_file_name)
+backend_stage = "clang -target {0} {1} -S -o {2}".format(target, linked_file_name, ptx_file_name)
 subprocess.call(backend_stage.split())
 
 ptx_run_stage = "ptxjit {0}".format(ptx_file_name)
