@@ -64,7 +64,7 @@ truncated_arg_list =  sys.argv[1:] # We don't want "python" and "buildscript.py"
 
 cl_file_name = "%s.cl" % base_file_name
 ir_file_name = "%s.ll" % base_file_name
-front_end_stage = "clang -Dcl_clang_storage_class_specifiers -I/home/chae14/llvm-ptx-samples/libclc/include/generic -I/home/chae14/llvm-ptx-samples/libclc/include/ptx -include clc/clc.h -target nvptx64 {0} -emit-llvm -S -o {1}".format(cl_file_name, ir_file_name)
+front_end_stage = "clang -Dcl_clang_storage_class_specifiers -I/home/chae14/llvm-ptx-samples/libclc/include/generic -I/home/chae14/llvm-ptx-samples/libclc/include/ptx -include clc/clc.h -target nvptx64-- {0} -emit-llvm -S -o {1}".format(cl_file_name, ir_file_name)
 subprocess.call(front_end_stage.split())
 
 if options.opt_code_flags:
@@ -85,7 +85,7 @@ linker_stage = "llvm-link libclc/install/lib/clc/nvptx64--.bc {0} -o {1}".format
 subprocess.call(linker_stage.split())
 
 ptx_file_name = "%s.nvptx.s" % base_file_name
-backend_stage = "clang -target nvptx64-nvidia-nvcl {0} -S -o {1}".format(linked_file_name, ptx_file_name)
+backend_stage = "clang -target nvptx64-- {0} -S -o {1}".format(linked_file_name, ptx_file_name)
 subprocess.call(backend_stage.split())
 
 ptx_run_stage = "ptxjit {0}".format(ptx_file_name)
