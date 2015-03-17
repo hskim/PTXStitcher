@@ -59,6 +59,9 @@ base_file_name = "test"
 parser = OptionParser()
 parser.add_option("--opt-flags", type="string", dest="opt_code_flags")
 parser.add_option("-o", type="string", dest="output_file_name")
+parser.add_option("-t", type="string", dest="target", default="cuda")
+parser.add_option("-m", type="int", dest="arch_size", default=64)
+
 truncated_arg_list =  sys.argv[1:] # We don't want "python" and "buildscript.py" in our list
 (options, args) = parser.parse_args(truncated_arg_list)
 
@@ -66,6 +69,25 @@ truncated_arg_list =  sys.argv[1:] # We don't want "python" and "buildscript.py"
 output_file_name = options.output_file_name
 output_file_name = base_file_name if output_file_name is None else os.path.splitext(output_file_name)[0]
 
+target = options.target
+VALID_TARGETS = ["cl", "cuda"]
+TARGET_FLAGS = {
+            'cl': {
+                32: 'nvptx--nvidiacl',
+                64: 'nvptx64--nvidiacl'
+                },
+            'cuda': {
+                32: 'nvptx--',
+                64: 'nvptx64--'
+            }
+        }
+
+arch_size = options.arch_size
+
+if target not in VALID_TARGETS:
+    print "WARNING!!: Your target is bogus" #TODO: throw an exception and bail out
+
+target = TARGET_FLAGS[target][arch_size]
 
 cl_file_name = "%s.cl" % base_file_name
 ir_file_name = "%s.ll" % base_file_name
