@@ -28,9 +28,9 @@ parser.add_option("--opt-flags", type="string", dest="opt_code_flags",
 parser.add_option("-o", type="string", dest="output_file_name",
         help="Name of the output file. By default, it will use the base name of the input. For example, if input file was \'helloworld.cl\', and no output name was specified, output will be \'helloworld.nvptx.s\'")
 parser.add_option("-t", type="string", dest="target", default="cuda",
-        help="Specify target. Valid targets: [cuda, cl]")
+        help="Specify target. Valid targets: [cuda, cl]. Default: cuda")
 parser.add_option("-m", type="int", dest="arch_size", default=64,
-        help="Specify architecture size. Valid sizes: [32, 64]")
+        help="Specify architecture size. Valid sizes: [32, 64]. Default: 64")
 
 truncated_arg_list =  sys.argv[1:] # We don't want "python" and "buildscript.py" in our list
 (options, args) = parser.parse_args(truncated_arg_list)
