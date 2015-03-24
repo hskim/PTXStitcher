@@ -3,6 +3,7 @@ import sys
 import subprocess
 import os.path
 from optparse import OptionParser
+from ConfigParser import ConfigParser
 
 
 def compilation_path1(base_file_name):
@@ -54,6 +55,12 @@ def base_file_name(file_name):
     name_without_extension = os.path.splitext(base_name)[0]
     return name_without_extension
 
+configuration = ConfigParser()
+configuration.read("config.cfg")
+libclc_path = configuration.get('Environment', 'libclc_path')
+
+if type(libclc_path) is 'str' and libclc_path[0] in ['\"', '\'']:
+    print "WARNING: libclc_path is string but config.cfg does not expect the value to be wrapped around in single or double quotes"
 
 parser = OptionParser()
 parser.add_option("--opt-flags", type="string", dest="opt_code_flags")
@@ -92,7 +99,7 @@ target = TARGET_FLAGS[target][arch_size]
 
 cl_file_name = "%s.cl" % base_file_name
 ir_file_name = "%s.ll" % base_file_name
-front_end_stage = "clang -Dcl_clang_storage_class_specifiers -I/home/chae14/llvm-ptx-samples/libclc/include/generic -I/home/chae14/llvm-ptx-samples/libclc/include/ptx -include clc/clc.h -target {0} {1} -emit-llvm -S -o {2}".format(target, cl_file_name, ir_file_name)
+front_end_stage = "clang -Dcl_clang_storage_class_specifiers -I{0}/include/generic -I{0}/include/ptx -include clc/clc.h -target {1} {2} -emit-llvm -S -o {3}".format(libclc_path, target, cl_file_name, ir_file_name)
 subprocess.call(front_end_stage.split())
 
 if options.opt_code_flags:
@@ -109,7 +116,7 @@ if options.opt_code_flags:
     ir_file_name = optimized_ir_file_name
 
 linked_file_name = "%s.linked.bc" % base_file_name
-linker_stage = "llvm-link libclc/install/lib/clc/{0}.bc {1} -o {2}".format(target, ir_file_name, linked_file_name)
+linker_stage = "llvm-link {0}/install/lib/clc/{1}.bc {2} -o {3}".format(libclc_path, target, ir_file_name, linked_file_name)
 subprocess.call(linker_stage.split())
 
 ptx_file_name = "%s.nvptx.s" % output_file_name
