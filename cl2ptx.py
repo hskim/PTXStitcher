@@ -32,7 +32,7 @@ parser.add_option("-t", type="string", dest="target", default="cuda",
 parser.add_option("-m", type="int", dest="arch_size", default=64,
         help="Specify architecture size. Valid sizes: [32, 64]. Default: 64")
 
-truncated_arg_list =  sys.argv[1:] # We don't want "python" and "buildscript.py" in our list
+truncated_arg_list =  sys.argv[1:] # We don't want "python" and "cl2ptx.py" in our list
 (options, args) = parser.parse_args(truncated_arg_list)
 
 base_file_name = base_file_name(truncated_arg_list[-1])
