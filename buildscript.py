@@ -6,46 +6,6 @@ from optparse import OptionParser
 from ConfigParser import ConfigParser
 
 
-def compilation_path1(base_file_name):
-    '''
-    Using the compilation path suggested here
-    http://renren.io/questions/484488/how-to-use-clang-to-compile-opencl-to-ptx-code
-    '''
-    cl_file_name = "%s.cl" % base_file_name
-    ir_file_name = "%s.ll" % base_file_name
-    front_end_stage = "clang -Dcl_clang_storage_class_specifiers -isystem libclc/install/include -include clc/clc.h -target nvptx64-- {0} -emit-llvm -S -o {1}".format(cl_file_name, ir_file_name)
-    #front_end_stage = "clang -Dcl_clang_storage_class_specifiers -isystem libclc/install/include -isystem libclc/install/include/clc/workitem -include clc/clc.h -target nvptx64-- {0} -emit-llvm -S -o {1}".format(cl_file_name, ir_file_name)
-
-    subprocess.call(front_end_stage.split())
-
-    linked_file_name = "%s.linked.bc" % base_file_name
-    #linker_stage = "llvm-link libclc/built_libs/nvptx64--.bc {0} -o {1}".format(ir_file_name, linked_file_name)
-    linker_stage = "llvm-link libclc/install/lib/clc/nvptx64--nvidiacl.bc {0} -o {1}".format(ir_file_name, linked_file_name)
-    subprocess.call(linker_stage.split())
-
-    ptx_file_name = "%s.nvptx.s" % base_file_name
-    backend_stage = "clang -target nvptx64 {0} -S -o {1}".format(linked_file_name, ptx_file_name)
-    subprocess.call(backend_stage.split())
-
-def compilation_path2(base_file_name):
-    '''
-    Using the compilation path in llvm-ptx-samples
-    '''
-    cl_file_name = "%s.cl" % base_file_name
-    ir_file_name = "%s.ll" % base_file_name
-    front_end_stage = "clang -Dcl_clang_storage_class_specifiers -I/home/chae14/llvm-ptx-samples/libclc/include/generic -I/home/chae14/llvm-ptx-samples/libclc/include/ptx -include clc/clc.h -target nvptx64 {0} -emit-llvm -S -o {1}".format(cl_file_name, ir_file_name)
-    subprocess.call(front_end_stage.split())
-
-    linked_file_name = "%s.linked.bc" % base_file_name
-    linker_stage = "llvm-link libclc/install/lib/clc/nvptx64--.bc {0} -o {1}".format(ir_file_name, linked_file_name)
-    subprocess.call(linker_stage.split())
-
-    ptx_file_name = "%s.nvptx.s" % base_file_name
-    backend_stage = "clang -target nvptx64-nvidia-nvcl {0} -S -o {1}".format(linked_file_name, ptx_file_name)
-    subprocess.call(backend_stage.split())
-
-
-
 def base_file_name(file_name):
     '''
     parse file name and append appropriate filename
