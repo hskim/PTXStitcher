@@ -7,6 +7,7 @@ PTXStitcher
 * clang 3.4 >=
 * llvm
 * gcc4.8
+* ptxjit
 Note: Please refer to this [link](http://tiku.io/questions/484488/how-to-use-clang-to-compile-opencl-to-ptx-code) to configure libclc and clang with ptx support.
 
 ## Setup ##
