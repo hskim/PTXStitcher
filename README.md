@@ -23,9 +23,9 @@ Internally it calls series of clang tools which you would have to call yourself 
 
 1. cl --> ll
 ```clang -Dcl_clang_storage_class_specifiers -Ipath/to/include/generic -Ipath/to/include/ptx -include clc/clc.h -target target-passed-in-as-flag foo.cl -emit-llvm -S foo.ll```
-1-2. ll --> ll or bc (optional ```opt``` stage, if you decide to add optimization stage)
+2. ll --> ll or bc (optional ```opt``` stage, if you decide to add optimization stage)
 ```opt passed-in-opt-flags foo.ll -o foo.opt.ll```
-2. ll or bc --> linked.bc (linking stage)
+3. ll or bc --> linked.bc (linking stage)
 ```llvm-link path/to/install/lib/clc/target-library.bc foo.ll -o foo.linked.bc```
-3. linked.bc --> nvptx.s (final backend)
+4. linked.bc --> nvptx.s (final backend)
 ```clang -target target-passed-in-as-flag foo.linked.bc -S -o foo.nvptx.s```
