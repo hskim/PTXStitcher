@@ -15,6 +15,12 @@ Note: Please refer to this [link](http://tiku.io/questions/484488/how-to-use-cla
 2. Add the path to `cl2ptx.py` to `PATH`.
 3. Edit `config.cfg` with proper configuration.
 
+If you do not have ```ptxjit``` installed in your machine please go ahead and install it.
+
+1. ```cd``` into /path/to/PTXStitcher/ptxjit
+2. Run ```make```
+3. If the build is successful, you will see a compiled ```ptxjit``` binary in your current folder. Please add the binary to your ```PATH```
+
 ## Usage ##
 To check out available flags, run `./cl2ptx.py --help`.
 
